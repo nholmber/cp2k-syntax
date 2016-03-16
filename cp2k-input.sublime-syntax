@@ -4,10 +4,16 @@ name: CP2K Syntax
 file_extensions: [inp, 1.restart]
 scope: syntax.cp2k
 
+variables:
+  ident: '[A-Za-z_][A-Za-z_0-9]*'
+
 contexts:
   main:
-    - match: \#
+    - match: (\#|\!)
       push: comment
+
+    - match: (?xi:\[.+\])
+      scope: variable
 
     - match: (?xi:^ \s* \&(.*) \b ) #(xi:\b (\&) \b) # \b END #(?xi:\b \&end \b)
       scope: keyword.control.cp2k
@@ -16,6 +22,24 @@ contexts:
       scope: string
       #push: comment
     #(?xi:^ \s* (?:(\w+):\s*)? (do\s+concurrent|do) \b (\s+\d+\s+)? \s* )
+
+    # numeric literals (without an exponent)
+    - match: (?i:(?<![a-z_])-?\d+(\.\d+)?\b)
+      scope: constant.numeric.cp2k
+    
+    # floating point literals with an exponent (must come before -+ operators) and optional underscore kind
+   # - match: (?xi:(?<![\w\)]) [-+]? (\d+\.\d+ | \d+\. | \.\d+ | \d+)  ([ed][-+]?\d+)?  (_\w+)? )
+   #   scope: constant.numeric.floating-point.cp2k
+
+    # set directive
+    - match: (?xi:(\@SET)\s({{ident}}|\{{{ident}}\}))
+      captures:
+        0: string
+        1: constant.numeric.cp2k
+
+    # logical values
+    - match: (?i:\s\.true\.\s|\s\.false\.\s|\s\.t\.\s|\s\.f\.\s|\btrue\b|\bfalse\b)
+      scope: constant.language.cp2k
 
   comment:
     - meta_scope: comment.line.cp2k
