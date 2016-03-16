@@ -1,0 +1,23 @@
+%YAML 1.2
+---
+name: CP2K Syntax
+file_extensions: [inp, 1.restart]
+scope: syntax.cp2k
+
+contexts:
+  main:
+    - match: \#
+      push: comment
+
+    - match: (?xi:^ \s* \&(.*) \b ) #(xi:\b (\&) \b) # \b END #(?xi:\b \&end \b)
+      scope: keyword.control.cp2k
+
+    - match: (?xi:^ \s* \@(include) \b ) #(xi:\b (\&) \b) # \b END #(?xi:\b \&end \b)
+      scope: string
+      #push: comment
+    #(?xi:^ \s* (?:(\w+):\s*)? (do\s+concurrent|do) \b (\s+\d+\s+)? \s* )
+
+  comment:
+    - meta_scope: comment.line.cp2k
+    - match: $\n?
+      pop: true
