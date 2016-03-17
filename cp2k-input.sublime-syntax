@@ -1,45 +1,67 @@
 %YAML 1.2
 ---
-name: CP2K Syntax
+name: CP2K Input
 file_extensions: [inp, 1.restart]
 scope: syntax.cp2k
 
 variables:
   ident: '[A-Za-z_][A-Za-z_0-9]*'
+  var:  '(\$\{{{ident}}\}|\${{ident}})'
+  bool: '(?i:\s\.true\.\s|\s\.false\.\s|\s\.t\.\s|\s\.f\.\s|\btrue\b|\bfalse\b)'
+  op: '(==|\/=)'
 
 contexts:
   main:
     - match: (\#|\!)
       push: comment
 
+    # keyword unit (KEYWORD [angstrom] VALUE)
     - match: (?xi:\[.+\])
       scope: variable
 
-    - match: (?xi:^ \s* \&(.*) \b ) #(xi:\b (\&) \b) # \b END #(?xi:\b \&end \b)
-      scope: keyword.control.cp2k
+    # input section with optional modifier (&SECTION ON / &END SECTION)
+    - match: (?xi:^\s*(\&{{ident}})\s({{ident}})? )
+      captures:
+        0: variable
+        1: keyword.control.cp2k
 
-    - match: (?xi:^ \s* \@(include) \b ) #(xi:\b (\&) \b) # \b END #(?xi:\b \&end \b)
-      scope: string
-      #push: comment
-    #(?xi:^ \s* (?:(\w+):\s*)? (do\s+concurrent|do) \b (\s+\d+\s+)? \s* )
+    # variable
+    - match: '{{var}}'
+      scope: variable
 
-    # numeric literals (without an exponent)
-    - match: (?i:(?<![a-z_])-?\d+(\.\d+)?\b)
+    # floats and integers (without an exponent)
+    - match: (?xi:(?<![a-z_]) [-+]? \d+(\.\d+)? \s)
+      scope: constant.numeric.cp2k
+
+    # integer list: 1..n
+    - match: (?xi:(?<![a-z_])[-+]? \d+\.\.\d+ \s)
       scope: constant.numeric.cp2k
     
-    # floating point literals with an exponent (must come before -+ operators) and optional underscore kind
-   # - match: (?xi:(?<![\w\)]) [-+]? (\d+\.\d+ | \d+\. | \.\d+ | \d+)  ([ed][-+]?\d+)?  (_\w+)? )
-   #   scope: constant.numeric.floating-point.cp2k
+    # floats with an exponent (must come before -+ operators) and optional underscore kind
+    - match: (?xi:(?<![a-z_\)]) [-+]? (\d+\.\d+ | \d+\. | \.\d+ | \d+) [ed] [-+]? \d+ (_\w+)? )
+      scope: constant.numeric.floating-point.cp2k
 
     # set directive
-    - match: (?xi:(\@SET)\s({{ident}}|\{{{ident}}\}))
+    - match: (?xi:(^\s*\@SET) \s ( {{ident}} | \{ {{ident}} \}) )
       captures:
         0: string
         1: constant.numeric.cp2k
 
+    # if/endif directive
+    - match: (?xi:(^\s*\@IF \s \( | \)$ | \@ENDIF) )
+      scope: string
+    
+    # include directive
+    - match: (?xi:^\s*\@INCLUDE \b )
+      scope: string
+
     # logical values
-    - match: (?i:\s\.true\.\s|\s\.false\.\s|\s\.t\.\s|\s\.f\.\s|\btrue\b|\bfalse\b)
+    - match: '{{bool}}'
       scope: constant.language.cp2k
+
+    # logical operators
+    - match: '{{op}}'
+      scope: keyword.operator.cp2k
 
   comment:
     - meta_scope: comment.line.cp2k
