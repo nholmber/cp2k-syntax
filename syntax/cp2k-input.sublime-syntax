@@ -1,0 +1,129 @@
+%YAML 1.2
+---
+name: CP2K Input
+file_extensions: [inp, 1.restart]
+scope: source.cp2k
+
+variables:
+  ident: '(?i:[a-z_][a-z_0-9]*)'
+  var:  '(\$\{{{ident}}\}|\${{ident}})'
+  bool: '(?i:\s+\.true\.\s|\s\.false\.\s|\s\.t\.\s|\s\.f\.\s|\strue\b|(?<===)\btrue\b|\btrue\b|(?<=\/=)\btrue\b|\bfalse\b|\st\s|\bf\b)'
+  op: '(==|\/=)'
+  path: '(?i:[\.\~\s]?\/[[a-z_0-9]*[\/]?]+)'
+  file: '(?i:\s[a-z0-9][a-z_0-9-\.]*\.[a-z][a-z]*\s)'
+  mathfun: '(?i:(abs|exp|log10|log|sqrt|sinh|cosh|tanh|sin|cos|tan|asin|acos|atan)(?=\s*\())'
+
+contexts:
+  main:
+    - match: (\#|\!)
+      push: comment
+
+    - match: (\'|\")
+      push: string
+
+    # generic strings (e.g. keywords)
+    # used for trapping floats and integers when they are part of a string
+   # - match: (?i:(?<!==)(?<!\/\=)(?!{{mathfun}})\b[a-z][-.a-z_0-9]*)
+    #  scope: string.unquoted.cp2k
+
+    # input section with optional modifier (&SECTION ON / &END SECTION)
+    - match: (?xi:^\s*(\&{{ident}})\s({{ident}})? )
+      captures:
+        1: entity.name.class.cp2k
+        2: constant.other.color.cp2k
+      push: section
+
+    # variable
+    - match: '{{var}}'
+      scope: variable.other.cp2k
+
+    # floats and integers (without an exponent)
+    - match: (?xi:(?<![a-z][a-z_\.]) ([-+\.])? \d+(\.)?(\d+)?(?!\.\.)(\b)?(?![-]?{{ident}}))
+      scope: constant.numeric.cp2k
+
+    # integer list: 1..n
+    - match: (?xi:(?<![a-z_])[-+]? \d+\.\.\d+ \s)
+      scope: constant.numeric.integer-list.cp2k
+    
+    # floats with an exponent (must come before -+ operators) and optional underscore kind
+    - match: (?xi:(?<![a-z_\)]) [-+]? (\d+\.\d+ | \d+\. | \.\d+ | \d+) [ed] [-+]? \d+ (_\w+)? )
+      scope: constant.numeric.exponent.cp2k
+
+    # set directive
+    - match: (?xi:(^\s*\@SET) \s ( {{ident}} | \{ {{ident}} \}) )
+      captures:
+        1: keyword.control.cp2k
+        2: constant.other.color.cp2k
+
+    # if/endif directive
+    - match: (?xi:(^\s*\@IF\s*\()) # (?:.*) (\s*\)) ) # ({{var}}) ({{op}}) ({{bool}}) (\s*\)) )
+      captures:
+        1: keyword.control.cp2k
+      push: 
+        - meta_scope: meta.scope.if-block
+        # closing bracket of if directive
+        - match: (?xi:( (?<=(TRUE\s)) \) | (?<=(TRUE)) \) | (?<=(FALSE\s)) \) | (?<=(FALSE)) \) ) )
+          scope: keyword.control.cp2k
+        # endif  
+        - match: (?xi:(^\s*\@ENDIF))
+          captures:
+            0: keyword.control.cp2k
+          pop: true
+        - include: main
+    
+    # include directive
+    - match: (?xi:^\s*\@INCLUDE \b )
+      scope: keyword.control.cp2k
+
+    # logical values
+    - match: '{{bool}}'
+      scope: constant.language.cp2k
+
+    # logical operators
+    - match: '{{op}}'
+      scope: keyword.operator.cp2k
+
+    # file paths
+    - match: '{{path}}'
+      scope: string.unquoted.cp2k
+
+    # files (ending with a character extension)
+    - match: '{{file}}'
+      scope: string.unquoted.cp2k
+
+    # mathematical operators
+    - match: (?:(?<=[0-9\s])(\*|\*\*|\^|\+|\-|\/)(?![a-z]))
+      scope: keyword.operator.cp2k
+
+    # supported mathematical functions
+    - match: '{{mathfun}}'
+      scope: support.function.cp2k
+
+  comment:
+    - meta_scope: comment.line.cp2k
+    - match: $\n?
+      pop: true
+
+  string:
+    - meta_scope: string.quoted.cp2k
+    - match: (\'|\")
+      pop: true
+
+  section:
+    - meta_scope: meta.scope.section
+    # keyword with optional unit specifier (KEYWORD [UNIT] VALUE)
+    - match: (?xi:^\s*([a-z_]+[a-z])\s+(\[.+\])?)
+      captures: 
+        1: entity.name.function.cp2k
+        2: variable.parameter.cp2k
+      scope: meta.scope.keyword
+    # catch stray '_' in keyword name
+   # - match: (?xi:(?<=[a-z])[_]+[^a-z]+)
+    #  scope: invalid.illegal.cp2k
+    # end section directive
+    - match: (?xi:^\s*(\&END)\s({{ident}})? )
+      captures:
+        0: entity.name.class.cp2k
+        1: entity.name.class.cp2k
+      pop: true
+    - include: main

@@ -1,0 +1,8 @@
+<snippet>
+	<content><![CDATA[
+@SET ${1:VARIABLE} ${2:VALUE}
+]]></content>
+	<tabTrigger>set</tabTrigger>
+	<scope>source.cp2k</scope>
+	<description>Set directive</description>
+</snippet>

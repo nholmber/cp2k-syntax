@@ -1,0 +1,8 @@
+<snippet>
+	<content><![CDATA[
+@include ${1:file.inc}
+]]></content>
+	<tabTrigger>inc</tabTrigger>
+	<scope>source.cp2k</scope>
+	<description>Include directive</description>
+</snippet>

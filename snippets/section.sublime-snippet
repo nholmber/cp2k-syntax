@@ -1,0 +1,10 @@
+<snippet>
+	<content><![CDATA[
+&${1:SECTION} ${2:}
+	$0
+&END ${1:SECTION}
+]]></content>
+	<tabTrigger>&</tabTrigger>
+	<scope>source.cp2k</scope>
+	<description>Input section</description>
+</snippet>
