@@ -11,12 +11,15 @@
 """This module exports the CP2KLint plugin class."""
 
 from SublimeLinter.lint import Linter, util
-
+import os
 
 class CP2KLint(Linter):
     """Provides an interface to the cp2klint executable."""
+    path = os.path.dirname(os.path.abspath(__file__))
+    executable_absolute = os.path.join(path,"linter/cp2klint")
+    default_manual = os.path.join(path,"sample-xml/cp2k_input.xml")
     syntax = 'cp2k-input'
-    cmd = ('cp2klint', '@', '*')
+    cmd = ('%s' %(executable_absolute), '@', '*')
     executable = None
     version_args = '--version'
     version_re = r'(?P<version>\d+\.\d+\.\d+)'
@@ -29,6 +32,6 @@ class CP2KLint(Linter):
     tempfile_suffix = "inp.tmp"
     check_version = True
     defaults = {
-        '@manualfile=': 'Packages/cp2k-syntax/sample-xml/cp2k_input.xml'
+        '@manualfile=': '%s' %(default_manual)
     }
 
