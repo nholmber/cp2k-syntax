@@ -44,7 +44,7 @@ class Section():
 		if not self.section_error:
 			self.keyword_error = [not keyword in [correct_keywords.text for correct_keywords in current.findall("KEYWORD/NAME")] for keyword in self.keywords]
 
-		if self.section_error: print('%s:%i:%i: E100 unknown section "%s"' %(__file__, self.linenumber, self.colnumber, self.name))
+		if self.section_error: print('%s:%i:%i: E100 unknown section "%s"' %(__file__, self.linenumber, self.colnumber+1, self.name))
 		if not self.section_error:
 			for i,x in enumerate(self.keyword_error):
 				if x: print('%s:%i:%i: E200 unknown keyword "%s"' %(__file__, self.keyword_linenumbers[i], self.keyword_colnumbers[i], self.keywords[i])) 
