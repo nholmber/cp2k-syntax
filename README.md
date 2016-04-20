@@ -3,7 +3,7 @@ Comprehensive syntax highlighting for [CP2K](https://www.cp2k.org/ "CP2K Project
 
 ## Features
 * Syntax highlighting based on the `.sublime-syntax` format requiring a recent version of Sublime Text 3 (minimum build number 3084)
-* Standalone python based linter which parses the [XML input description](https://www.cp2k.org/howto:generate_manual?s[]=xml "Generate XML input description") of CP2K
+* Standalone python linter which parses the input file and compares it to the CP2K [XML input description](https://www.cp2k.org/howto:generate_manual?s[]=xml "Instructions for generating XML input description") (a sample XML file `sample-xml/cp2k_input.xml` is provided for CP2K version `x.x`) 
 * Snippets for commonly used control sequences
 
 ## Installation
