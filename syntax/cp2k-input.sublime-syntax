@@ -12,6 +12,8 @@ variables:
   path: '(?i:[\.\~\s]?\/[[a-z_0-9-\.]*[\/]?]+)'
   file: '(?i:\s[a-z0-9][a-z_0-9-\.]*\.[a-z][a-z]*\s)'
   mathfun: '(?i:(abs|exp|log10|log|sqrt|sinh|cosh|tanh|sin|cos|tan|asin|acos|atan)(?=\s*\())'
+  # Negative look behind does not support variable width expressions (?), so the first few cases are written out explicitly 
+  number_prefix: '(?:[a-z][a-z_\.0-9]|[a-z][a-z_\.0-9][a-z_\.0-9]|[a-z][a-z_\.0-9][a-z_\.0-9][a-z_\.0-9]|[a-z][a-z_\.0-9][a-z_\.0-9][a-z_\.0-9][a-z_\.0-9]|[a-z][a-z_\.0-9][a-z_\.0-9][a-z_\.0-9][a-z_\.0-9][a-z_\.0-9])'
 
 contexts:
   main:
@@ -38,7 +40,7 @@ contexts:
       scope: variable.other.cp2k
 
     # floats and integers (without an exponent)
-    - match: (?xi:(?<![a-z][a-z_\.]) ([-+\.])? \d+(\.)?(\d+)?(?!\.\.)(\b)?(?![-]?{{ident}}))
+    - match: (?xi:(?<!{{number_prefix}}) ([-+\.])? \d+(\.)?(\d+)?(?!\.\.)(\b)?(?![-]?{{ident}}))
       scope: constant.numeric.cp2k
 
     # integer list: 1..n
