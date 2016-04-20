@@ -115,7 +115,7 @@ contexts:
     - meta_scope: meta.scope.section
     
     # keyword with optional unit specifier (KEYWORD [UNIT] VALUE)
-    - match: (?xi:^\s*([a-z_]+[a-z])\s+(\[.+\])?)
+    - match: (?xi:^\s*([a-z_]+[a-z])(\s*\[.+\])?)
       captures: 
         1: entity.name.function.cp2k
         2: variable.parameter.cp2k
