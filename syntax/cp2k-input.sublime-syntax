@@ -1,7 +1,7 @@
 %YAML 1.2
 ---
 name: CP2K Input
-file_extensions: [inp, 1.restart]
+file_extensions: [inp, 1.restart, inc]
 scope: source.cp2k
 
 variables:
@@ -69,7 +69,7 @@ contexts:
           captures:
             0: keyword.control.cp2k
           pop: true
-        - include: main
+        - include: section
     
     # include directive
     - match: (?xi:^\s*\@INCLUDE \b )
@@ -111,15 +111,14 @@ contexts:
 
   section:
     - meta_scope: meta.scope.section
+    
     # keyword with optional unit specifier (KEYWORD [UNIT] VALUE)
     - match: (?xi:^\s*([a-z_]+[a-z])\s+(\[.+\])?)
       captures: 
         1: entity.name.function.cp2k
         2: variable.parameter.cp2k
       scope: meta.scope.keyword
-    # catch stray '_' in keyword name
-   # - match: (?xi:(?<=[a-z])[_]+[^a-z]+)
-    #  scope: invalid.illegal.cp2k
+
     # end section directive
     - match: (?xi:^\s*(\&END)\s({{ident}})? )
       captures:

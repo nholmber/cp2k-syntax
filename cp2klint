@@ -44,16 +44,17 @@ class Section():
 		if not self.section_error:
 			self.keyword_error = [not keyword in [correct_keywords.text for correct_keywords in current.findall("KEYWORD/NAME")] for keyword in self.keywords]
 
-		if self.section_error: print '%s:%i:%i: E100 unknown section "%s"' %(__file__, self.linenumber, self.colnumber, self.name)
+		if self.section_error: print('%s:%i:%i: E100 unknown section "%s"') %(__file__, self.linenumber, self.colnumber, self.name)
 		if not self.section_error:
 			for i,x in enumerate(self.keyword_error):
-				if x: print '%s:%i:%i: E200 unknown keyword "%s"' %(__file__, self.keyword_linenumbers[i], self.keyword_colnumbers[i], self.keywords[i])
+				if x: print('%s:%i:%i: E200 unknown keyword "%s"') %(__file__, self.keyword_linenumbers[i], self.keyword_colnumbers[i], self.keywords[i])
 
 class CP2KInput(Section):
 	"""Root section of a CP2K input file"""
-	def __init__(self,arg):
+	def __init__(self, inputfile, manual):
 		Section.__init__(self, 'ROOT', None)
-		self.parse_input(arg)
+		self.parse_input(inputfile)
+		self.find_root(manual)
 		self.check_root()
 		
 	def parse_input(self, arg):
@@ -64,30 +65,49 @@ class CP2KInput(Section):
 				linenum += 1
 				if not re.search("(\@|\#|^\s*$)", line): colnum = len(line)-len(line.lstrip())+1
 				line = line.rstrip()
-				if '&' in line and '&END' not in line: 
+				if '&' in line and '&END' not in line and '#' not in line: 
 					current.sections.append(Section(line.lstrip().lstrip('&').split()[0].upper(), current))
 					current = current.sections[-1]
 					current.linenumber = linenum
 					current.colnumber = colnum
-				elif '&END' in line:
+				elif '&END' in line and '#' not in line:
 					current = current.parent
 				elif not re.search("(\@|\#|^\s*$)",line):
 					current.keywords.append(line.split()[0].upper())
 					current.keyword_linenumbers.append(linenum)
 					current.keyword_colnumbers.append(colnum)
 
+	def find_root(self, manual):
+		"""Find the root section that contains all the top-level sections of the input file.  
+		   For full input files, this is the root of the entire manual.
+		   For e.g. include files, this is the section that is one level higher up in hierarchy than visible in the input file"""
+		list = [key.name for key in self.sections]
+		if list not in [key[0].text for key in manual if key.tag == "SECTION"]:
+			should_break = False
+			for key in manual.iter(tag="SECTION"):
+				nfound = 0
+				if should_break: break
+				for subkey in key:
+					if subkey.tag == 'SECTION' and subkey[0].text in list: 
+						nfound += 1
+						if nfound == len(list):
+							manual = key
+							should_break = True
+							break
+		
+		self.manual = manual			
+
 	def check_root(self):
 		for i,x in enumerate(self.keywords):
-			print '%s:%i:%i: E300 found garbage "%s" outside sections' %(__file__, self.keyword_linenumbers[i], self.keyword_colnumbers[i], self.keywords[i])
+			print('%s:%i:%i: E300 found garbage "%s" outside sections') %(__file__, self.keyword_linenumbers[i], self.keyword_colnumbers[i], self.keywords[i])
 
-def main(inputfile, manualfile):
-	manual = ET.parse(manualfile).getroot()
-	input = CP2KInput(inputfile)
+def main(inputfile, manualfile): 
+	input = CP2KInput(inputfile, ET.parse(manualfile).getroot())
 	for key in input.sections:
 		stack = []
 		key.get_subsections(stack)
 		for section in stack:
-			section.check_keywords(manual)
+			section.check_keywords(input.manual)
 
 if __name__ == '__main__':
 	import argparse
