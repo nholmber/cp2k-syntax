@@ -9,7 +9,7 @@ variables:
   var:  '(\$\{{{ident}}\}|\${{ident}})'
   bool: '(?i:\s+\.true\.\s|\s\.false\.\s|\s\.t\.\s|\s\.f\.\s|\strue\b|(?<===)\btrue\b|\btrue\b|(?<=\/=)\btrue\b|\bfalse\b|\st\s|\bf\b)'
   op: '(==|\/=)'
-  path: '(?i:[\.\~\s]?\/[[a-z_0-9]*[\/]?]+)'
+  path: '(?i:[\.\~\s]?\/[[a-z_0-9-\.]*[\/]?]+)'
   file: '(?i:\s[a-z0-9][a-z_0-9-\.]*\.[a-z][a-z]*\s)'
   mathfun: '(?i:(abs|exp|log10|log|sqrt|sinh|cosh|tanh|sin|cos|tan|asin|acos|atan)(?=\s*\())'
 
