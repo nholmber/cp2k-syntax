@@ -31,6 +31,7 @@ The simplest way to install this package is via [Package Control](https://packag
 The output of the linter is parsed and displayed on screen by the `SublimeLinter` package. To customize the linting view and other settings, please take a look at the documentantion of [`SublimeLinter`](http://www.sublimelinter.com/en/latest/index.html# "Customizing SublimeLinter").
 
 The linter recognizes allowed keyword names by parsing the XML input description of CP2K. A sample XML file `sample-xml/cp2k_input.xml` is provided for CP2K version `3.0` and the linter by default uses this file. If you are using a different version of CP2K, you can replace the default XML file with your own file by following these steps:
+
 1. Create the [XML input description](https://www.cp2k.org/howto:generate_manual?s[]=xml "Instructions for generating the XML input description of CP2K").
 2. Place the generated `cp2k_input.xml` in any directory.
 3. Configure the linter to use the generated file.
