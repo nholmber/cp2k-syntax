@@ -1,5 +1,6 @@
 # cp2k-syntax
-Comprehensive syntax highlighting for [CP2K](https://www.cp2k.org/ "CP2K Project") input files in Sublime Text 3. **CP2K** is a freely available program package to perform atomistic simulations of solid state, liquid, molecular, periodic, material, crystal, and biological systems.
+Comprehensive syntax highlighting for [CP2K](https://www.cp2k.org/ "CP2K Project") input files in Sublime Text 3.
+**CP2K** is a freely available program package to perform atomistic simulations of solid state, liquid, molecular, periodic, material, crystal, and biological systems.
 
 ![alt text](figures/sample-input.png?raw=true "CP2K input file syntax highlighting for Sublime Text 3")
 
@@ -52,4 +53,4 @@ The linter recognizes allowed keyword names by parsing the XML input description
 
 ## Contributing
 
-If you find bug in the linter or syntax highlighting, please open a new issue in the [issue tracker](issues/) and include a minimal input file for reproducing the bug. You can also contribute directly by forking the project and posting a pull request. Check the [issue tracker](issues/) for known issues and nice-to-have unimplemented features.
+If you find bug in the linter or syntax highlighting, please open a new issue in the [issue tracker](https://github.com/nholmber/cp2k-syntax/issues) and include a minimal input file for reproducing the bug. You can also contribute directly by forking the project and posting a pull request. Check the [issue tracker](https://github.com/nholmber/cp2k-syntax/issues) for known issues and nice-to-have unimplemented features.
