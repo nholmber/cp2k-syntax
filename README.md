@@ -1,7 +1,7 @@
 # cp2k-syntax
 Comprehensive syntax highlighting for [CP2K](https://www.cp2k.org/ "CP2K Project") input files in Sublime Text 3. CP2K is a freely available program package to perform atomistic simulations of solid state, liquid, molecular, periodic, material, crystal, and biological systems.
 
-![alt text](figures/sample-input.png?raw=true "CP2K input file syntax highlighting for Sublime Text 3")
+![alt text](figures/sample-input-small.png?raw=true "CP2K input file syntax highlighting for Sublime Text 3")
 
 ## Features
 * Syntax highlighting based on the `.sublime-syntax` format requiring a recent version of Sublime Text 3 (minimum build number 3084)
