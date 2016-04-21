@@ -34,7 +34,7 @@ By default, files ending in `.inp`, `.inc`, and `.restart` are recognized as CP2
 2. Navigate to `View -> Syntax -> Open all with current extension as ... -> CP2K Input`
 
 
-The output of the linter is parsed and displayed on screen by the `SublimeLinter` package. To customize the linting view and other settings, please take a look at the documentantion of [`SublimeLinter`](http://www.sublimelinter.com/en/latest/index.html# "Customizing SublimeLinter").
+The output of the linter is parsed and displayed on screen by the `SublimeLinter` package. To customize the linting view and other settings, please take a look at the documentation of [`SublimeLinter`](http://www.sublimelinter.com/en/latest/index.html# "Customizing SublimeLinter").
 
 The linter recognizes allowed keyword names by parsing the XML input description of CP2K. A sample XML file `sample-xml/cp2k_input.xml` is provided for CP2K version `3.0` and the linter by default uses this file. If you are using a different version of CP2K, you can replace the default XML file with your own file by following these steps
 
@@ -48,4 +48,4 @@ The linter recognizes allowed keyword names by parsing the XML input description
 
 ## Contributing
 
-Pull requests are welcomed. Check the issue tracker for known issues and nice-to-have unimplented features.
+If you find bug in the linter or syntax highlighting, please open a new issue in the [issue tracker](https://github.com/nholmber/cp2k-syntax/issues) and include a minimal input file for reproducing the bug. You can also contribute directly by forking the project and posting a pull request. Check the [issue tracker](https://github.com/nholmber/cp2k-syntax/issues) for known issues and nice-to-have unimplemented features.
