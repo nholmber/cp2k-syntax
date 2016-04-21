@@ -28,11 +28,16 @@ The simplest way to install this package is via [Package Control](https://packag
 
 ## Usage and configuration
 
+By default, files ending in `.inp`, `.inc`, and `.restart` are recognized as CP2K input files and syntax highlighting should be applied to these files automatically. If for some reason the automatic detection does not work or you wish to enable highlighting for a different file extension, you need to take the following steps
+
+1. Open the file for which you wish to enable syntax highlighting.
+2. Navigate to `View -> Syntax -> Open all with current extension as ... -> CP2K Input`
+
 The output of the linter is parsed and displayed on screen by the `SublimeLinter` package. To customize the linting view and other settings, please take a look at the documentantion of [`SublimeLinter`](http://www.sublimelinter.com/en/latest/index.html# "Customizing SublimeLinter").
 
 The linter recognizes allowed keyword names by parsing the XML input description of CP2K. A sample XML file `sample-xml/cp2k_input.xml` is provided for CP2K version `3.0` and the linter by default uses this file. If you are using a different version of CP2K, you can replace the default XML file with your own file by following these steps:
 
-1. Create the [XML input description](https://www.cp2k.org/howto:generate_manual?s[]=xml "Instructions for generating the XML input description of CP2K").
+1. Create an [XML input description](https://www.cp2k.org/howto:generate_manual?s[]=xml "Instructions for generating the XML input description of CP2K") for your version of CP2K.
 2. Place the generated `cp2k_input.xml` in any directory.
 3. Configure the linter to use the generated file.
 	1. Open the Command Palette (`ctrl+shift+p` on Linux/Windows)
