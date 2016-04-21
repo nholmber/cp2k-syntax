@@ -15,9 +15,9 @@ This
 1. If not already installed, install [Package Control](https://packagecontrol.io/installation "Package Control installation instructions") for Sublime Text 3.
 2. Install [SublimeLinter](http://www.sublimelinter.com/en/latest/installation.html "SublimeLinter installation instructions").
 3. Install this package via Package Control
-	i. Open the Command Palette (`ctrl+shift+p` on Linux)
-	ii. Type `install` and select `Package Control: Install Package`
-	iii. Type `cp2k` and select `cp2k-syntax`
+	1. Open the Command Palette (`ctrl+shift+p` on Linux)
+	2. Type `install` and select `Package Control: Install Package`
+	3. Type `cp2k` and select `cp2k-syntax`
 
 
 ## Usage and configuration
