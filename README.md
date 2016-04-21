@@ -8,3 +8,20 @@ Comprehensive syntax highlighting for [CP2K](https://www.cp2k.org/ "CP2K Project
 * Snippets for commonly used control sequences
 
 ## Installation
+
+This
+
+### Package Control
+1. If not already installed, install [Package Control](https://packagecontrol.io/installation "Package Control installation instructions") for Sublime Text 3.
+2. Install [SublimeLinter](http://www.sublimelinter.com/en/latest/installation.html "SublimeLinter installation instructions").
+3. Install this package via Package Control
+	i. Open the Command Palette (`ctrl+shift+p` on Linux)
+	ii. Type `install` and select `Package Control: Install Package`
+	iii. Type `cp2k` and select `cp2k-syntax`
+
+
+## Usage and configuration
+
+## Contributing
+
+Pull requests are welcomed. Check the issue tracker for known issues and nice-to-have unimplented features.
