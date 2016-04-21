@@ -47,7 +47,8 @@ class Section():
 		if self.section_error: print('%s:%i:%i: E100 unknown section "%s"' %(__file__, self.linenumber, self.colnumber+1, self.name))
 		if not self.section_error:
 			for i,x in enumerate(self.keyword_error):
-				if x: print('%s:%i:%i: E200 unknown keyword "%s"' %(__file__, self.keyword_linenumbers[i], self.keyword_colnumbers[i], self.keywords[i])) 
+				if x and len(current.findall("DEFAULT_KEYWORD")) != 1:
+					print('%s:%i:%i: E200 unknown keyword "%s"' %(__file__, self.keyword_linenumbers[i], self.keyword_colnumbers[i], self.keywords[i])) 
 
 class CP2KInput(Section):
 	"""Root section of a CP2K input file"""

@@ -5,7 +5,7 @@ file_extensions: [inp, 1.restart, inc]
 scope: source.cp2k
 
 variables:
-  ident: '(?i:[a-z_0-9][a-z_0-9]*)'
+  ident: '(?i:[a-z_0-9][a-z\-_0-9]*)'
   var:  '(\$\{{{ident}}\}|\${{ident}})'
   bool: '(?i:\s+\.true\.\s|\s\.false\.\s|\s\.t\.\s|\s\.f\.\s|\strue\b|(?<===)\btrue\b|\btrue\b|(?<=\/=)\btrue\b|\bfalse\b|\st\s|\bf\b)'
   op: '(==|\/=)'
