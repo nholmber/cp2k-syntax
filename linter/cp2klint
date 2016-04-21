@@ -62,9 +62,10 @@ class CP2KInput(Section):
 		with open(arg) as fp:
 			current = self
 			linenum = 0
+			first_line = True
 			for line in fp:
 				linenum += 1
-				if not re.search("(\@|\#|^\s*$)", line): colnum = len(line)-len(line.lstrip())+1
+				if not re.search("(\@|\#|^\s*$|\!)", line): colnum = len(line)-len(line.lstrip())+1
 				line = line.rstrip()
 				if '&' in line and '&END' not in line and '#' not in line: 
 					current.sections.append(Section(line.lstrip().lstrip('&').split()[0].upper(), current))
@@ -73,10 +74,21 @@ class CP2KInput(Section):
 					current.colnumber = colnum
 				elif '&END' in line and '#' not in line:
 					current = current.parent
-				elif not re.search("(\@|\#|^\s*$)",line):
-					current.keywords.append(line.split()[0].upper())
-					current.keyword_linenumbers.append(linenum)
-					current.keyword_colnumbers.append(colnum)
+				elif not re.search("(\@|\#|^\s*$|\!)",line):
+					# Check for line continuation
+					if ("\\" in line.split()[-1]):
+						line_continues = True
+					else:
+						line_continues = False
+					# Ignore everything after first line continuation
+					if first_line:
+						current.keywords.append(line.split()[0].upper())
+						current.keyword_linenumbers.append(linenum)
+						current.keyword_colnumbers.append(colnum)
+						if line_continues: 
+							first_line = False
+						else:
+							first_line = True
 
 	def find_root(self, manual):
 		"""Find the root section that contains all the top-level sections of the input file.  
