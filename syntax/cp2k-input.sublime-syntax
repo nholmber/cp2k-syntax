@@ -10,7 +10,7 @@ variables:
   bool: '(?i:\s+\.true\.\s|\s\.false\.\s|\s\.t\.\s|\s\.f\.\s|\strue\b|(?<===)\btrue\b|\btrue\b|(?<=\/=)\btrue\b|\bfalse\b|\st\s|\bf\b)'
   op: '(==|\/=)'
   path: '(?i:[\.\~\s]?\/[[a-z_0-9-\.]*[\/]?]+)'
-  file: '(?i:\s[a-z0-9][a-z_0-9-\.]*\.[a-z][a-z]*\s)'
+  file: '(?i:(\b|(?<=\}))[a-z_0-9-\.]*\.[a-z][a-z]*\s)'
   mathfun: '(?i:(abs|exp|log10|log|sqrt|sinh|cosh|tanh|sin|cos|tan|asin|acos|atan)(?=\s*\())'
   # Negative look behind does not support variable width expressions (?), so the first few cases are written out explicitly 
   number_prefix: '(?:[a-z][a-z\-_\.0-9\}]|[a-z][a-z\-_\.0-9\}][a-z\-_\.0-9\}]|[a-z][a-z\-_\.0-9\}][a-z\-_\.0-9\}][a-z\-_\.0-9\}]|[a-z][a-z\-_\.0-9\}][a-z\-_\.0-9\}][a-z\-_\.0-9\}][a-z\-_\.0-9\}]|[a-z][a-z\-_\.0-9\}][a-z\-_\.0-9\}][a-z\-_\.0-9\}][a-z\-_\.0-9\}][a-z\-_\.0-9\}])'
@@ -115,7 +115,7 @@ contexts:
     - meta_scope: meta.scope.section
     
     # keyword with optional unit specifier (KEYWORD [UNIT] VALUE)
-    - match: (?xi:^\s*([a-z_0-9]*[a-z])(\s*\[.+\])?)
+    - match: (?xi:^\s*([a-z_0-9\+]*[a-z])(\s*\[.+\])?)
       captures: 
         1: entity.name.function.cp2k
         2: variable.parameter.cp2k
