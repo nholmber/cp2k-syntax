@@ -5,12 +5,12 @@ file_extensions: [inp, inc, restart]
 scope: source.cp2k
 
 variables:
-  ident: '(?i:[a-z_0-9][a-z\-_0-9]*)'
+  ident: '(?i:[a-z_0-9\.][a-z\-_0-9]*)'
   var:  '(\$\{{{ident}}\}|\${{ident}})'
   bool: '(?i:\s+\.true\.\s|\s\.false\.\s|\s\.t\.\s|\s\.f\.\s|\strue\b|(?<===)\btrue\b|\btrue\b|(?<=\/=)\btrue\b|\bfalse\b|\st\s|\bf\b)'
   op: '(==|\/=)'
   path: '(?i:[\.\~\s]?\/[[a-z_0-9-\.]*[\/]?]+)'
-  file: '(?i:(\b|(?<=\}))[a-z_0-9-\.]*\.[a-z][a-z]*\s)'
+  file: '(?i:(\b[a-z_0-9-\.]+|(?<=\}))\.[a-z][a-z]*\s)'
   mathfun: '(?i:(abs|exp|log10|log|sqrt|sinh|cosh|tanh|sin|cos|tan|asin|acos|atan)(?=\s*\())'
   # Negative look behind does not support variable width expressions (?), so the first few cases are written out explicitly 
   number_prefix: '(?:[a-z][a-z\-_\.0-9\}]|[a-z][a-z\-_\.0-9\}][a-z\-_\.0-9\}]|[a-z][a-z\-_\.0-9\}][a-z\-_\.0-9\}][a-z\-_\.0-9\}]|[a-z][a-z\-_\.0-9\}][a-z\-_\.0-9\}][a-z\-_\.0-9\}][a-z\-_\.0-9\}]|[a-z][a-z\-_\.0-9\}][a-z\-_\.0-9\}][a-z\-_\.0-9\}][a-z\-_\.0-9\}][a-z\-_\.0-9\}])'
