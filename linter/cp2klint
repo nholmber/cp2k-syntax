@@ -17,6 +17,7 @@ class Section():
 		self.keywords = []
 		self.keyword_linenumbers = []
 		self.keyword_colnumbers = []
+		self.has_closing = False
 		if parent == None: 
 			self.path = self.name
 		else: 
@@ -30,7 +31,12 @@ class Section():
 	def path_to_string(self):
 		return self.path.replace('ROOT','.').split('/')[1:]
 
+	def raise_noclosing_error(self):
+		print('%s:%i:%i: E110 missing section closing directive "&END %s"' %(__file__, self.linenumber, self.colnumber+1, self.name))
+		sys.exit(1)
+
 	def check_keywords(self, manual):
+		if not self.has_closing: self.raise_noclosing_error
 		current = manual
 		for element in self.path_to_string():
 			found_key = False
@@ -68,12 +74,34 @@ class CP2KInput(Section):
 				if not re.search("(\@|\#|^\s*$|\!)", line): colnum = len(line)-len(line.lstrip())+1
 				line = line.rstrip()
 				if '&' in line and '&END' not in line and '#' not in line: 
+					if '&' not in line.lstrip().split()[0]: 
+						print('%s:%i:%i: E101 found garbage "%s" before section start directive' %(__file__, linenum, colnum+1, line.lstrip().split()[0]))
+						sys.exit(1)
 					current.sections.append(Section(line.lstrip().lstrip('&').split()[0].upper(), current))
 					current = current.sections[-1]
 					current.linenumber = linenum
 					current.colnumber = colnum
 				elif '&END' in line and '#' not in line:
-					current = current.parent
+					if '&' not in line.lstrip().split()[0]: 
+						print('%s:%i:%i: E102 found garbage "%s" before section close directive' %(__file__, linenum, colnum+1, line.lstrip().split()[0]))
+						sys.exit(1)
+					# If end statement is explicit i.e. '&END SECTION', check for mismatch in section name in the closing and starting directives (CP2K probably would not complain)
+					# Failure here could also indicate that the number of closing and starting directives is different
+					try:
+						if not current.name==line.lstrip().lstrip('&').split()[1].upper():
+							print('%s:%i:%i: E120 missing section starting directive "&%s", or there are too many "&END" statements between "&%s/&END %s"'
+							      %(__file__, linenum, colnum+1, line.lstrip().lstrip('&').split()[1].upper(),line.lstrip().lstrip('&').split()[1].upper(),
+					  	          line.lstrip().lstrip('&').split()[1].upper()))
+							sys.exit(1)
+					except IndexError:
+						pass
+					current.has_closing = True
+					if current.parent != None: 
+						current = current.parent
+					else:
+						for i in xrange(current.linenumber+1,linenum+1):
+							print('%s:%i:%i: E150 the number of section starting and closing directives is different' %(__file__, i, 1))
+						sys.exit(1)
 				elif not re.search("(\@|\#|^\s*$|\!)",line):
 					# Check for line continuation
 					if ("\\" in line.split()[-1]):
@@ -97,16 +125,35 @@ class CP2KInput(Section):
 		list = [key.name for key in self.sections]
 		if list not in [key[0].text for key in manual if key.tag == "SECTION"]:
 			should_break = False
-			for key in manual.iter(tag="SECTION"):
-				nfound = 0
+			# First check if the root of the entire manual is the root section (the initial check might have failed due to repeating sections)
+			nfound = 0
+			for key in manual:
 				if should_break: break
+				if key.tag == "SECTION" and key[0].text in list:
+					if key.attrib['repeats'].upper() == 'NO' and list.count(key[0].text) != 1:
+						for val in self.sections:
+							if val.name == key[0].text:
+								print('%s:%i:%i: E171 section "&%s" does not repeat' %(__file__, val.linenumber, val.colnumber+1, val.name))
+						sys.exit(1)
+					nfound +=  list.count(key[0].text)
+					if nfound == len(list):
+						should_break = True
+						break
+			# Try to find root section by performing DFS on the remaining sections
+			for key in manual.iter(tag="SECTION"):
+				if should_break: break
+				nfound = 0
 				for subkey in key:
-					if subkey.tag == 'SECTION' and subkey[0].text in list: 
+					if subkey.tag == 'SECTION' and subkey[0].text in list:
 						nfound += 1
 						if nfound == len(list):
 							manual = key
 							should_break = True
 							break
+			if nfound != len(list):
+				for key in self.sections: print('%s:%i:%i: E170 input root section not found: check all top-level section names' %(__file__, key.linenumber, key.colnumber+1))
+				sys.exit(1)
+
 		
 		self.manual = manual			
 

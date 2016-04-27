@@ -122,7 +122,7 @@ contexts:
       scope: meta.scope.keyword
 
     # end section directive
-    - match: (?xi:^\s*(\&END)\s({{ident}})? )
+    - match: (?xi:^\s*(\&END)(\s|\b)({{ident}})? )
       captures:
         0: entity.name.class.cp2k
         1: entity.name.class.cp2k
