@@ -1,0 +1,8 @@
+cp2k-syntac
+===========
+
+Thank you for installing cp2k-syntax -- a syntax highlighter and linter for
+cp2k input files.
+
+If you find any oddities in how your input file is highlighted or linted, please
+file a bug at https://github.com/nholmber/cp2k-syntax/issues
