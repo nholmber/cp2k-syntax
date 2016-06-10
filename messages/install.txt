@@ -1,4 +1,4 @@
-cp2k-syntac
+cp2k-syntax
 ===========
 
 Thank you for installing cp2k-syntax -- a syntax highlighter and linter for
